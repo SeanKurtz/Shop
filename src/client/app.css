@@ -1,8 +1,61 @@
-h1 {
-  color: green;
+
+html, body {
+    height: 100%;
 }
 
-body {
-  text-align: center;
-  margin: auto;
+#root {
+    display: flex;
+    flex-direction:column;
+    height: 100%;
+}
+.container{
+    margin-top: 2rem;
+    padding-top: 1rem;
+}
+.form-container{
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    margin-bottom: 3rem;
+}
+
+.form-signin{
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: auto;
+}
+
+.container-center{
+    height: 100%;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+@media (min-width: 576px) {
+    .card-columns {
+        column-count: 2;
+    }
+}
+
+@media (min-width: 768px) {
+    .card-columns {
+        column-count: 3;
+    }
+}
+
+@media (min-width: 992px) {
+    .card-columns {
+        column-count: 4;
+    }
+}
+
+@media (min-width: 1200px) {
+    .card-columns {
+        column-count: 5;
+    }
 }
