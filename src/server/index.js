@@ -1,10 +1,10 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
-const Item = require('./models/item');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const express = require('express');
 const User = require('./models/user');
+const ItemRouter = require('./routes/ItemRouter');
 
 const app = express();
 
@@ -16,52 +16,32 @@ app.use(cors());
 const MONGODB_URI = 'mongodb+srv://admin:passmesomepasscode@cluster0-mbedf.mongodb.net/test?retryWrites=true&w=majority';
 
 app.use(express.static('dist'));
-app.get('/api/items', async (req, res) => {
-  try {
-    const items = await Item.find();
-    res.json(items);
-  } catch (err) {
-    res.json({
-      message: err
-    });
-  }
-});
+app.use('/api/items', ItemRouter);
 
-app.post('/api/items', async (req, res) => {
-  const item = new Item({
-    title: req.body.title,
-    description: req.body.description,
-    price: req.body.price
-  });
-  try {
-    const savedItem = await item.save();
-    res.json(savedItem);
-  } catch (err) {
-    res.json({
-      message: err
-    });
-  }
-});
-
-app.post('/api/signup', (req, res, next) => {
+app.post('/api/signup', (req, res) => {
   const { email, password } = req.body;
   if (!email) {
-    return res.json({ success: false, message: 'Error: email must not be blank' });
+    return res.json({
+      success: false,
+      message: 'Error: email must not be blank'
+    });
   }
   if (!password) {
-    return res.json({ success: false, message: 'Error: password must not be blank' });
+    return res.json({
+      success: false,
+      message: 'Error: password must not be blank'
+    });
   }
 
   // Check if account already exists
-  User.find({
-    email
-  }, (err, previousUsers) => {
+  User.find({ email }, (err, previousUsers) => {
     if (err) {
       return res.json({
         success: false,
         message: 'Error: Server error looking up users'
       });
-    } if (previousUsers.length > 0) {
+    }
+    if (previousUsers.length > 0) {
       return res.json({
         success: false,
         message: 'Error: Account already exists'
@@ -78,29 +58,47 @@ app.post('/api/signup', (req, res, next) => {
           message: 'Error: Server error looking up users'
         });
       }
-      return res.send({
+      return res.json({
         success: true,
         message: 'Signed up'
       });
+    });
+    return res.json({
+      success: false,
+      message: 'Error: failed signing up'
     });
   });
 });
 
 app.post('/api/login', (req, res, next) => {
   const { email, password } = req.body;
-  User.find({
-    email
-  }, (err, previousUsers) => {
+  console.log('Receiving request at /api/login');
+  console.log(`email: ${email} password: ${password}`);
+  User.find({ email }, (err, previousUsers) => {
     if (err) {
       return res.send({
         success: false,
         message: 'Error: Server error looking up users'
       });
-    } if (previousUsers.length > 0) { // We found a result, we only care about first result. If there are more results for one email, we have a problem with signup.
+    }
+    if (previousUsers.length > 0) {
+      // Only use first result. If more, problem verifying signup.
       const firstUserResult = previousUsers[0].toJSON();
       const passwordHash = firstUserResult.password;
       console.log(passwordHash);
-      return bcrypt.compare(passwordHash, password);
+      bcrypt.compare(password, passwordHash, (err, result) => {
+        console.log(result);
+        if (result) {
+          return res.json({
+            success: true,
+            message: 'Success: logged in.'
+          });
+        }
+        return res.json({
+          success: false,
+          message: 'Error: failed to log in.'
+        });
+      });
     }
   });
 });

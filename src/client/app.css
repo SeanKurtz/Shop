@@ -27,6 +27,27 @@ html, body {
     margin: auto;
 }
 
+.signup{
+    display:flex;
+    flex-direction: row;
+    justify-content: left;
+    margin-bottom: 0.5rem;
+}
+.signup-label{
+    margin: 0;
+}
+.signup-checkbox{
+    margin-left: 1rem;
+    align-self:center;
+}
+
+.home{
+    text-align:center;
+}
+
+.btn{
+    margin-right: 0.2rem;
+}
 .container-center{
     height: 100%;
     display: -ms-flexbox;
@@ -36,6 +57,8 @@ html, body {
     padding-top: 40px;
     padding-bottom: 40px;
 }
+
+
 @media (min-width: 576px) {
     .card-columns {
         column-count: 2;

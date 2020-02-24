@@ -4,7 +4,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const Login = ({
-  onSubmit, onChange
+  failed, signUp, onSubmit, onChange
 }) => (
   <div className="form-container">
     <form className="form-signin text-center" onSubmit={onSubmit}>
@@ -17,8 +17,17 @@ const Login = ({
         <label htmlFor="inputPassword" className="sr-only">Password</label>
         <input type="password" id="inputPassword" className="form-control" placeholder="Password" onChange={onChange} required />
       </div>
-      <br />
+      <div className="signup">
+        <label className="signup-label">Sign up</label>
+        <input className="signup-checkbox" type="checkbox" value="signup" checked={signUp} onChange={onChange} />
+      </div>
       <button className="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      { failed && (
+      <div className="alert alert-danger" role="alert">
+        Sign in failed.
+      </div>
+      )}
+
     </form>
   </div>
 );
@@ -26,10 +35,14 @@ const Login = ({
 const onSubmit = () => console.log('On submit stub');
 const onChange = () => console.log('On change stub');
 Login.defaultProps = {
+  signUp: false,
+  failed: false,
   onSubmit,
   onChange,
 };
 Login.propTypes = {
+  signUp: PropTypes.bool,
+  failed: PropTypes.bool,
   onSubmit: PropTypes.func,
   onChange: PropTypes.func,
 };
